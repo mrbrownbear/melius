@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <channel>
+    <title>Melius Blog</title>
+    <link>/blog.html</link>
+    <description>In-depth guides, AI model breakdowns and honest tool comparisons, from Nano Banana and Seedance to the creative workflows behind the Melius canvas.</description>
+    <language>en-us</language>
+    <lastBuildDate>Wed, 16 Sep 2026 00:00:00 GMT</lastBuildDate>
+    <atom:link href="/blog/feed.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>Google Vertex AI alternatives for creative teams</title>
+      <link>/blog/google-vertex-ai-alternatives-creative-teams.html</link>
+      <guid isPermaLink="true">/blog/google-vertex-ai-alternatives-creative-teams.html</guid>
+      <description>Seven ways to reach Veo without a cloud project, compared on setup, where the work lives, throughput, and what you give up in governance.</description>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>How to trim, arrange and export video on Melius</title>
+      <link>/blog/trim-arrange-export-video.html</link>
+      <guid isPermaLink="true">/blog/trim-arrange-export-video.html</guid>
+      <description>Video editing on Melius: trim and arrange clips, layer picture and audio, adjust speed and effects, and render the finished sequence as an MP4 without leaving the workspace.</description>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Guides</category>
+    </item>
+    <item>
+      <title>How to organize and share video assets on Melius</title>
+      <link>/blog/video-asset-management.html</link>
+      <guid isPermaLink="true">/blog/video-asset-management.html</guid>
+      <description>Video asset management on Melius: store footage, organize it with folders and tags, inspect metadata and share the right version without losing the context behind it.</description>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Guides</category>
+    </item>
+    <item>
+      <title>How to turn a script into a natural voiceover on Melius</title>
+      <link>/blog/text-to-speech-voiceover.html</link>
+      <guid isPermaLink="true">/blog/text-to-speech-voiceover.html</guid>
+      <description>Text to speech on Melius: turn a written script into a voiceover, direct the delivery, compare takes and balance the audio in your video. Here is what each control does.</description>
+      <pubDate>Wed, 16 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Guides</category>
+    </item>
+    <item>
+      <title>AI video generators for filmmakers, compared</title>
+      <link>/blog/ai-video-generators-filmmakers-compared.html</link>
+      <guid isPermaLink="true">/blog/ai-video-generators-filmmakers-compared.html</guid>
+      <description>Eight tools compared on what a director actually needs: shot control, consistency across cuts, an editorial surface, and whether the footage clears.</description>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>How to generate a product hero shot on Melius</title>
+      <link>/blog/product-hero-shot.html</link>
+      <guid isPermaLink="true">/blog/product-hero-shot.html</guid>
+      <description>Generate a product hero shot from a pack shot on Melius, and keep the product dimensionally and visually accurate instead of nearly right.</description>
+      <pubDate>Mon, 14 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Guides</category>
+    </item>
+    <item>
+      <title>Where to run Seedance 2.5: platforms compared</title>
+      <link>/blog/where-to-run-seedance-2-5.html</link>
+      <guid isPermaLink="true">/blog/where-to-run-seedance-2-5.html</guid>
+      <description>Six platforms compared on the resolution they actually expose, what a 5-second take costs, reference limits, and whether there is anywhere to work.</description>
+      <pubDate>Sat, 12 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>How to build a static ad from a style reference on Melius</title>
+      <link>/blog/static-ad-from-style-reference.html</link>
+      <guid isPermaLink="true">/blog/static-ad-from-style-reference.html</guid>
+      <description>Point an agent at a moodboard and ask for statics in that style. The brief that does it, what the agent builds in the background, and where you steer.</description>
+      <pubDate>Fri, 11 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Guides</category>
+    </item>
+    <item>
+      <title>AI brand mockup tools, ranked</title>
+      <link>/blog/ai-brand-mockup-tools-ranked.html</link>
+      <guid isPermaLink="true">/blog/ai-brand-mockup-tools-ranked.html</guid>
+      <description>Seven brand mockup tools ranked on the thing most roundups skip: whether your actual logo survives the render, or gets redrawn into something close to it.</description>
+      <pubDate>Thu, 10 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Best AI tools for jewelry product photos</title>
+      <link>/blog/best-ai-tools-jewelry-product-photos.html</link>
+      <guid isPermaLink="true">/blog/best-ai-tools-jewelry-product-photos.html</guid>
+      <description>Seven AI tools compared for jewelry photography, judged on whether your actual piece survives the edit, plus on-model shots, scale, and metal and stone fidelity.</description>
+      <pubDate>Wed, 09 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Agentic image generation tools, compared</title>
+      <link>/blog/agentic-image-generation-tools-compared.html</link>
+      <guid isPermaLink="true">/blog/agentic-image-generation-tools-compared.html</guid>
+      <description>Seven tools compared on how much of the work the agent actually does: who plans the steps, who picks the models, and whether you can see and change the plan.</description>
+      <pubDate>Tue, 08 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>The best AI image generators for marketing, ranked</title>
+      <link>/blog/best-ai-image-generators-marketing.html</link>
+      <guid isPermaLink="true">/blog/best-ai-image-generators-marketing.html</guid>
+      <description>Five AI image generators for marketing teams, compared on brand fidelity, in-image text, campaign volume, and channel resizing, with the trade-offs.</description>
+      <pubDate>Mon, 07 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Best AI tools for creating fashion campaign videos</title>
+      <link>/blog/best-ai-tools-fashion-campaign-videos.html</link>
+      <guid isPermaLink="true">/blog/best-ai-tools-fashion-campaign-videos.html</guid>
+      <description>Five AI tools for fashion campaign video, compared on garment fidelity, holding one model across clips, fabric under light, and editorial motion.</description>
+      <pubDate>Sun, 06 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Best AI creative canvases for image generation</title>
+      <link>/blog/best-ai-creative-canvases-image-generation.html</link>
+      <guid isPermaLink="true">/blog/best-ai-creative-canvases-image-generation.html</guid>
+      <description>Five AI creative canvases compared on who builds the graph, which models you can reach, whether workflows are reusable, and how they price collaboration.</description>
+      <pubDate>Sat, 05 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Best tools for AI generated design concepts</title>
+      <link>/blog/best-tools-ai-generated-design-concepts.html</link>
+      <guid isPermaLink="true">/blog/best-tools-ai-generated-design-concepts.html</guid>
+      <description>Five AI tools for generating design concepts, compared on how precisely you can set a direction, comparing options, and reusing a look later.</description>
+      <pubDate>Sat, 05 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Tools to turn a picture into a professional headshot, ranked</title>
+      <link>/blog/turn-picture-into-professional-headshot-tools-ranked.html</link>
+      <guid isPermaLink="true">/blog/turn-picture-into-professional-headshot-tools-ranked.html</guid>
+      <description>Turn a picture into a professional headshot with five tools ranked on likeness, team consistency, and the work required to reuse each portrait.</description>
+      <pubDate>Thu, 03 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Best AI tools to turn images into a painting</title>
+      <link>/blog/best-ai-tools-turn-images-into-painting.html</link>
+      <guid isPermaLink="true">/blog/best-ai-tools-turn-images-into-painting.html</guid>
+      <description>Which AI tool turns a photo into a painting? Five compared on style control, whether the subject survives, and repeating a look across many images.</description>
+      <pubDate>Wed, 02 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Best AI tools for producing product photo variants</title>
+      <link>/blog/best-ai-tools-product-photo-variants.html</link>
+      <guid isPermaLink="true">/blog/best-ai-tools-product-photo-variants.html</guid>
+      <description>Which AI tool should you use for product photo variants? Five tools compared on product fidelity, batch output and channel resizing, with the trade-offs.</description>
+      <pubDate>Tue, 01 Sep 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>Best AI photo background editing tools</title>
+      <link>/blog/best-ai-photo-background-editing-tools.html</link>
+      <guid isPermaLink="true">/blog/best-ai-photo-background-editing-tools.html</guid>
+      <description>Which AI tool should you use to edit photo backgrounds? Five compared on cutout quality, replacing a background convincingly, and finishing the job.</description>
+      <pubDate>Mon, 31 Aug 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>My Summer Internship with Melius</title>
+      <link>/blog/melius-summer-internship.html</link>
+      <guid isPermaLink="true">/blog/melius-summer-internship.html</guid>
+      <description>Wrapping up my summer engineering internship at Melius. Here is what I got to own, from building agent skills and context to the Playground, plus the team culture, the pre-launch off-site, and what I learned about product engineering and UX.</description>
+      <pubDate>Wed, 19 Aug 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Melius News</category>
+    </item>
+    <item>
+      <title>Seedance 2.5 is live on Melius: 30-second video with audio</title>
+      <link>/blog/seedance-2-5.html</link>
+      <guid isPermaLink="true">/blog/seedance-2-5.html</guid>
+      <description>Seedance 2.5 is live on Melius. ByteDance&apos;s new video model generates up to 30 seconds in a single take with audio in the same pass, and takes up to 50 reference files. Here is what shipped, what you can run today, and what is still coming.</description>
+      <pubDate>Fri, 07 Aug 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Melius News</category>
+    </item>
+    <item>
+      <title>The best Figma Weave alternative for generative design</title>
+      <link>/blog/figma-weave-alternative.html</link>
+      <guid isPermaLink="true">/blog/figma-weave-alternative.html</guid>
+      <description>Looking for a Figma Weave (Weavy) alternative? Weave puts a generation canvas next to your design files, great if you live in Figma. If you don&apos;t, the ecosystem coupling and fast credit burn become constraints. Here&apos;s how Melius compares as a standalone, canvas-first workspace with an agent and one credit pool.</description>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>The best Magnific alternative for upscaling and creative AI</title>
+      <link>/blog/magnific-alternative.html</link>
+      <guid isPermaLink="true">/blog/magnific-alternative.html</guid>
+      <description>Looking for a Magnific alternative? Magnific&apos;s creative upscaler is a strong specialist, but if upscaling is one step in a real production, not the whole tool, and you&apos;d rather not pay premium rates for a no-refund, credit-metered enhancer, here&apos;s how Melius folds generation, editing, resizing and assembly onto one canvas.</description>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>The best Flora alternative for creative teams</title>
+      <link>/blog/flora-alternative.html</link>
+      <guid isPermaLink="true">/blog/flora-alternative.html</guid>
+      <description>Looking for a Flora alternative? Flora (Florafauna) and Melius are the two node canvases most often compared, so &quot;we have a canvas and an agent&quot; isn&apos;t the difference. The real gaps are collaboration, learning curve, and pricing. Here&apos;s how Melius handles the same work with true real-time multiplayer.</description>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>The best Higgsfield alternative for cinematic AI video</title>
+      <link>/blog/higgsfield-alternative.html</link>
+      <guid isPermaLink="true">/blog/higgsfield-alternative.html</guid>
+      <description>Looking for a Higgsfield alternative? Higgsfield nails cinematic camera motion, but teams outgrow its fixed roster and export-to-edit workflow. Here&apos;s an honest look at how Melius handles the same work, with every frontier model, an agent that plans multi-step pipelines, and a place to finish the cut.</description>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Comparisons</category>
+    </item>
+    <item>
+      <title>The modern creative workflow: every tool you need, in one place</title>
+      <link>/blog/modern-creative-workflow-tools.html</link>
+      <guid isPermaLink="true">/blog/modern-creative-workflow-tools.html</guid>
+      <description>The modern creative stack has sprawled into a dozen subscriptions, stock sites, and disconnected apps. Here is a guide to the tools, assets, and platforms behind a fast creative workflow, and how a single canvas like Melius collapses generation, editing, assets, and collaboration into one place.</description>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Guides</category>
+    </item>
+    <item>
+      <title>AIGC for marketing: scaling AI-generated visual content</title>
+      <link>/blog/aigc-marketing-content.html</link>
+      <guid isPermaLink="true">/blog/aigc-marketing-content.html</guid>
+      <description>What is AIGC? AI-generated content is reshaping how marketing teams produce images and video at scale. Here is a plain-English guide to generative AI in content workflows, how Google views AI content, and how a single canvas like Melius turns one brief into on-brand visuals across every model.</description>
+      <pubDate>Tue, 21 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Guides</category>
+    </item>
+    <item>
+      <title>Connect Claude to a creative canvas with MCP</title>
+      <link>/blog/connect-ai-agents-canvas-mcp.html</link>
+      <guid isPermaLink="true">/blog/connect-ai-agents-canvas-mcp.html</guid>
+      <description>Connect Claude to a creative canvas over MCP and skip the context drift you get from copy-pasting into a chatbot. The Model Context Protocol exposes the Melius canvas as live, structured data an agent can read and act on. Here is how to connect Claude to Melius, what the tools actually are, and why the loop self-corrects.</description>
+      <pubDate>Mon, 20 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Melius News</category>
+    </item>
+    <item>
+      <title>One subscription, every model: an all-in-one AI aggregator guide</title>
+      <link>/blog/one-subscription-every-model.html</link>
+      <guid isPermaLink="true">/blog/one-subscription-every-model.html</guid>
+      <description>An AI aggregator puts every model, text, image, video and audio, under one subscription instead of a fragmented stack that clears $100 a month. Here is why aggregators are winning, what a true all-in-one creative AI platform must deliver, and a three-step plan to consolidate your workflow onto a single canvas.</description>
+      <pubDate>Fri, 17 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Melius News</category>
+    </item>
+    <item>
+      <title>The Brief-to-Execution workflow for creative teams</title>
+      <link>/blog/brief-to-execution-workflow.html</link>
+      <guid isPermaLink="true">/blog/brief-to-execution-workflow.html</guid>
+      <description>One-shot prompting has a ceiling. The agencies that win aren&apos;t the ones with the best prompt. They&apos;re the ones that turn a single master brief into a full, on-brand campaign. Here is the Brief-to-Execution workflow, and how an orchestration layer like Melius splits the Labor of Execution from the Labor of Taste.</description>
+      <pubDate>Thu, 16 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Melius News</category>
+    </item>
+    <item>
+      <title>Seedance 2.5 is coming: ByteDance&apos;s next-gen AI video model</title>
+      <link>/blog/seedance-2-5-anticipation.html</link>
+      <guid isPermaLink="true">/blog/seedance-2-5-anticipation.html</guid>
+      <description>Seedance is behind more than a quarter of every video generation on Melius, and its share keeps climbing. ByteDance&apos;s Seedance 2.5 is announced with 50 reference inputs, synced audio, and, per its makers, native 4K. Here is the real usage data behind Seedance today, and an honest read on what 2.5 does and does not confirm.</description>
+      <pubDate>Tue, 07 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Melius News</category>
+    </item>
+    <item>
+      <title>Which Nano Banana model should you use?</title>
+      <link>/blog/nano-banana-image-models.html</link>
+      <guid isPermaLink="true">/blog/nano-banana-image-models.html</guid>
+      <description>Google&apos;s Nano Banana is three image models, not one. We pulled real generation data from Melius to work out when to use Nano Banana Pro, Nano Banana 2, and Nano Banana 2 Lite.</description>
+      <pubDate>Fri, 03 Jul 2026 00:00:00 GMT</pubDate>
+      <dc:creator>Melius Team</dc:creator>
+      <category>Melius News</category>
+    </item>
+  </channel>
+</rss>
