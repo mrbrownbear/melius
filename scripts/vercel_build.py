@@ -9,16 +9,36 @@ if DIST.exists():
     shutil.rmtree(DIST)
 DIST.mkdir()
 
-ONLY = {"index.html"}
+EXCLUDE_DIRS = {
+    ".git", ".github", ".vercel", "dist", "tools", "scripts",
+    "media", "images", "videos", "_external", "_vercel", "api",
+    "blog", "models",
+}
+EXCLUDE_FILES = {
+    "vercel.json", ".vercelignore", ".gitattributes", ".nojekyll",
+    "about.html", "blog.html", "book-intro.html", "brand.html",
+    "contact.html", "desktop-app.html", "enterprise.html",
+    "manifesto.html", "models.html", "pricing.html", "privacy.html",
+    "terms.html", ".vercel-trigger",
+}
 
 count = 0
 size = 0
 
-for rel_name in sorted(ONLY):
-    p = ROOT / rel_name
+for p in ROOT.rglob("*"):
     if not p.is_file():
-        raise SystemExit(f"Missing required file: {rel_name}")
-    target = DIST / rel_name
+        continue
+    rel = p.relative_to(ROOT)
+    if any(part in EXCLUDE_DIRS for part in rel.parts[:-1]):
+        continue
+    if rel.name in EXCLUDE_FILES:
+        continue
+    if rel.suffix.lower() == ".htc":
+        continue
+    if rel.as_posix() == "desktop-app/download.dmg":
+        continue
+
+    target = DIST / rel
     target.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(p, target)
     count += 1
