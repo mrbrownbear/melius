@@ -1,67 +1,13 @@
 name: Localize Melius
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - '.github/workflows/localize.yml'
-      - 'scripts/**'
-  pull_request:
-    branches: [main]
-    paths:
-      - '.github/workflows/localize.yml'
-      - 'scripts/**'
   workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  localize:
+  notice:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
     steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref || github.ref_name }}
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install crawler
-        run: |
-          python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 playwright
-          python -m playwright install --with-deps chromium
-
-      - name: Capture and localize site
-        run: python scripts/localize.py
-
-      - name: Replace repository with localized static build
-        run: |
-          find . -mindepth 1 -maxdepth 1 ! -name .git ! -name .github ! -name scripts ! -name site -exec rm -rf {} +
-          cp -a site/. .
-          rm -rf site
-
-      - name: Commit localized build
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git lfs install
-
-          while IFS= read -r -d '' file; do
-            rel="${file#./}"
-            echo "Tracking large localized asset with Git LFS: $rel"
-            git lfs track "$rel"
-          done < <(find . -type f -size +95M -not -path './.git/*' -print0)
-
-          git add .gitattributes 2>/dev/null || true
-          git add -A
-
-          git diff --cached --quiet && exit 0
-          git commit -m "Localize Melius static site"
-
-          BRANCH="${GITHUB_HEAD_REF:-main}"
-          git push origin "HEAD:${BRANCH}"
+      - run: echo "The site is already localized. No automatic live-site crawl is enabled."
