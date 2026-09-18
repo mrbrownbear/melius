@@ -2,6 +2,10 @@ desktop-app/download.dmg
 media/
 images/
 videos/
+_external/
+_vercel/
+api/c15t/
+api/status.json
 *.htc
 
 # Duplicate clean-url route copies; canonical directory indexes stay deployed.
