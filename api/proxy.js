@@ -55,6 +55,31 @@ function routeKey(p) {
   return "/" + p.replace(/\/+$/, "");
 }
 
+function rewriteKnownAssetUrls(html, requestId) {
+  let rewrites = 0;
+  const rewritten = html.replace(/\/[A-Za-z0-9_@%+~.,=\-\/]+/g, (match) => {
+    const path = match.slice(1);
+    if (!FILES.has(path)) return match;
+
+    const pageRoute = PAGES["/" + path] || PAGES["/" + path.replace(/\.html$/, "")];
+    if (pageRoute) return match;
+
+    if (path === "desktop-app/download.dmg") {
+      rewrites += 1;
+      return githubRawUrl(path);
+    }
+
+    rewrites += 1;
+    return cdnUrl(path);
+  });
+
+  emit("info", "html_asset_rewrite", {
+    requestId,
+    rewrites
+  });
+  return rewritten;
+}
+
 async function fetchPage(sourcePath, requestId) {
   const origins = [
     { name: "jsdelivr", url: cdnUrl(sourcePath) },
@@ -172,13 +197,18 @@ module.exports = async function handler(req, res) {
       }));
     }
 
-    const buffer = Buffer.from(await result.response.arrayBuffer());
+    const originalBuffer = Buffer.from(await result.response.arrayBuffer());
+    const originalHtml = originalBuffer.toString("utf8");
+    const rewrittenHtml = rewriteKnownAssetUrls(originalHtml, requestId);
+    const buffer = Buffer.from(rewrittenHtml, "utf8");
+
     emit("info", "page_served", {
       requestId,
       path,
       route,
       pageSource,
       origin: result.origin,
+      originalBytes: originalBuffer.length,
       bytes: buffer.length,
       elapsedMs: Date.now() - started
     });
