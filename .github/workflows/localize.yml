@@ -48,8 +48,20 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git lfs install
+
+          while IFS= read -r -d '' file; do
+            rel="${file#./}"
+            echo "Tracking large localized asset with Git LFS: $rel"
+            git lfs track "$rel"
+          done < <(find . -type f -size +95M -not -path './.git/*' -print0)
+
+          git add .gitattributes 2>/dev/null || true
           git add -A
+
           git diff --cached --quiet && exit 0
           git commit -m "Localize Melius static site"
+
           BRANCH="${GITHUB_HEAD_REF:-main}"
           git push origin "HEAD:${BRANCH}"
