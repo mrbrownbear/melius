@@ -3,3 +3,17 @@ media/
 images/
 videos/
 *.htc
+
+# Duplicate clean-url route copies; canonical directory indexes stay deployed.
+about.html
+blog.html
+book-intro.html
+brand.html
+contact.html
+desktop-app.html
+enterprise.html
+manifesto.html
+models.html
+pricing.html
+privacy.html
+terms.html
