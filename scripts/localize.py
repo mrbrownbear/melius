@@ -123,6 +123,9 @@ def fetch_asset(url: str, force: bool = False) -> str | None:
     seen_urls.add(url)
     if not is_http(url) or is_tracker(url):
         return None
+    pcheck = urlparse(url)
+    if pcheck.hostname not in HOSTS and Path(pcheck.path).suffix.lower() not in RESOURCE_EXTS:
+        return None
     try:
         p = urlparse(url)
         if p.hostname in HOSTS and p.path == "/_next/image":
@@ -133,7 +136,7 @@ def fetch_asset(url: str, force: bool = False) -> str | None:
                 if rel:
                     url_map[url] = rel
                     return rel
-        r = session.get(url, timeout=45, allow_redirects=True)
+        r = session.get(url, timeout=20, allow_redirects=True)
         if r.status_code >= 400:
             failed_urls.append(f"{r.status_code} {url}")
             return None
@@ -175,19 +178,46 @@ RUNTIME = r'''<script id="__local_only_guard">
     try { const x = new URL(String(u && u.url ? u.url : u), location.href); return !/^https?:$/.test(x.protocol) || x.origin === LOCAL; }
     catch { return true; }
   };
+  const localize = (u) => {
+    try {
+      const raw = String(u && u.url ? u.url : u);
+      const x = new URL(raw, location.href);
+      if (x.origin === LOCAL && x.pathname === "/_next/image") {
+        const source = x.searchParams.get("url");
+        if (source) return decodeURIComponent(source);
+      }
+      return raw;
+    } catch { return u; }
+  };
+  const localizeSrcset = (v) => String(v).split(",").map(part => {
+    const bits = part.trim().split(/\\s+/);
+    if (bits[0]) bits[0] = localize(bits[0]);
+    return bits.join(" ");
+  }).join(", ");
   const empty = (type="application/json") => Promise.resolve(new Response(type.includes("json") ? "{}" : "", {status:200,headers:{"Content-Type":type}}));
   const f = window.fetch;
-  window.fetch = function(u,o){ return same(u) ? f.call(this,u,o) : empty(); };
+  window.fetch = function(u,o){ const x=localize(u); return same(x) ? f.call(this,x,o) : empty(); };
   const xo = XMLHttpRequest.prototype.open;
-  XMLHttpRequest.prototype.open = function(m,u,...rest){ return xo.call(this,m,same(u)?u:"/api/empty.json",...rest); };
+  XMLHttpRequest.prototype.open = function(m,u,...rest){ const x=localize(u); return xo.call(this,m,same(x)?x:"/api/empty.json",...rest); };
   try { navigator.sendBeacon = () => true; } catch {}
   const attrs = [[HTMLImageElement,"src"],[HTMLScriptElement,"src"],[HTMLLinkElement,"href"],[HTMLVideoElement,"src"],[HTMLAudioElement,"src"],[HTMLSourceElement,"src"],[HTMLIFrameElement,"src"]];
   for (const [C,p] of attrs) {
     try {
       const d = Object.getOwnPropertyDescriptor(C.prototype,p);
-      if (d && d.set) Object.defineProperty(C.prototype,p,{...d,set(v){ if (!same(v) && this.tagName !== "A") return d.set.call(this, this.tagName === "IMG" ? "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" : ""); return d.set.call(this,v); }});
+      if (d && d.set) Object.defineProperty(C.prototype,p,{...d,set(v){ const x=localize(v); if (!same(x) && this.tagName !== "A") return d.set.call(this, this.tagName === "IMG" ? "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs=" : ""); return d.set.call(this,x); }});
     } catch {}
   }
+  try {
+    const d = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype,"srcset");
+    if (d && d.set) Object.defineProperty(HTMLImageElement.prototype,"srcset",{...d,set(v){ return d.set.call(this,localizeSrcset(v)); }});
+  } catch {}
+  const nativeSetAttribute = Element.prototype.setAttribute;
+  Element.prototype.setAttribute = function(name,value) {
+    const n = String(name).toLowerCase();
+    if (n === "srcset") value = localizeSrcset(value);
+    else if (["src","href","poster"].includes(n) && this.tagName !== "A") value = localize(value);
+    return nativeSetAttribute.call(this,name,value);
+  };
   document.addEventListener("click", (e) => {
     const a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
     if (!a || e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
@@ -341,7 +371,10 @@ async def crawl() -> None:
             url_map[u] = rel
 
     for u in list(captured):
-        fetch_asset(u, force=True)
+        ct = content_types.get(u, "").lower()
+        ext = Path(urlparse(u).path).suffix.lower()
+        if ext in RESOURCE_EXTS or ct.startswith(("image/", "video/", "audio/", "font/")) or "javascript" in ct or "text/css" in ct:
+            fetch_asset(u, force=True)
 
     queue: set[str] = set()
     for p in OUT.rglob("*"):
