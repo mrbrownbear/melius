@@ -1,0 +1,25 @@
+name: Verify Localized Static Site
+
+on:
+  push:
+    branches: [localize-run]
+    paths:
+      - '.github/workflows/verify-local.yml'
+      - 'tools/verify_static.py'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify static site is Git only
+        run: python tools/verify_static.py
