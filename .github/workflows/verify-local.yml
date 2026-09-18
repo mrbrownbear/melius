@@ -2,10 +2,32 @@ name: Verify Localized Static Site
 
 on:
   push:
-    branches: [localize-run]
+    branches: [main, localize-run]
     paths:
       - '.github/workflows/verify-local.yml'
       - 'tools/verify_static.py'
+      - '**/*.html'
+      - '**/*.css'
+      - '**/*.js'
+      - '**/*.mjs'
+      - '**/*.cjs'
+      - '**/*.json'
+      - '**/*.svg'
+      - '**/*.woff'
+      - '**/*.woff2'
+      - '**/*.ttf'
+      - '**/*.otf'
+      - '**/*.eot'
+      - '**/*.png'
+      - '**/*.jpg'
+      - '**/*.jpeg'
+      - '**/*.webp'
+      - '**/*.gif'
+      - '**/*.avif'
+      - '**/*.mp4'
+      - '**/*.webm'
+      - '**/*.dmg'
+      - 'vercel.json'
   workflow_dispatch:
 
 permissions:
