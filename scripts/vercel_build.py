@@ -12,7 +12,6 @@ DIST.mkdir()
 EXCLUDE_DIRS = {
     ".git", ".github", ".vercel", "dist", "tools", "scripts",
     "media", "images", "videos", "_external", "_vercel", "api",
-    "blog", "models",
 }
 EXCLUDE_FILES = {
     "vercel.json", ".vercelignore", ".gitattributes", ".nojekyll",
@@ -45,4 +44,4 @@ for p in ROOT.rglob("*"):
     size += p.stat().st_size
 
 mb = size / 1024 / 1024
-print(f"Prepared Vercel diagnostic output: {count} files, {mb:.2f} MB")
+print(f"Prepared full static output: {count} files, {mb:.2f} MB")
