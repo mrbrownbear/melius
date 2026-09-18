@@ -18,7 +18,7 @@ EXCLUDE_FILES = {
     "about.html", "blog.html", "book-intro.html", "brand.html",
     "contact.html", "desktop-app.html", "enterprise.html",
     "manifesto.html", "models.html", "pricing.html", "privacy.html",
-    "terms.html",
+    "terms.html", ".vercel-trigger",
 }
 
 count = 0
