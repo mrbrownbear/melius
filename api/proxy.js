@@ -1,64 +1,95 @@
-const OWNER = process.env.GITHUB_SITE_OWNER || "mrbrownbear";
-const REPO = process.env.GITHUB_SITE_REPO || "melius";
-const REF = process.env.GITHUB_SITE_REF || "main";
-const RAW_BASE = `https://raw.githubusercontent.com/${OWNER}/${REPO}/${REF}/`;
+const manifest = require("../site-manifest.json");
 
-function emit(level, event, data = {}) {
-  const payload = {
-    scope: "melius-git-proxy",
+const OWNER = manifest.source.owner;
+const REPO = manifest.source.repo;
+const REF = manifest.source.ref;
+const CDN_BASE = "https://cdn.jsdelivr.net/gh/" + OWNER + "/" + REPO + "@" + REF + "/";
+const RAW_BASE = "https://raw.githubusercontent.com/" + OWNER + "/" + REPO + "/" + REF + "/";
+const GITHUB_RAW_BASE = "https://github.com/" + OWNER + "/" + REPO + "/raw/" + REF + "/";
+const FILES = new Set(Object.keys(manifest.files));
+const PAGES = manifest.pages;
+
+function emit(level, event, data) {
+  const rec = Object.assign({
+    scope: "melius-site",
     event,
     ts: new Date().toISOString(),
-    ...data,
-  };
-  const line = JSON.stringify(payload);
+    source: OWNER + "/" + REPO + "@" + REF.slice(0, 12)
+  }, data || {});
+  const line = JSON.stringify(rec);
   if (level === "error") console.error(line);
   else if (level === "warn") console.warn(line);
   else console.log(line);
 }
 
-function safePath(input) {
-  let value = String(input || "");
-  try { value = decodeURIComponent(value); } catch {}
-  value = value.replace(/^\/+/, "").replace(/\\/g, "/");
-  const parts = value.split("/").filter(Boolean);
-  if (parts.some((part) => part === "." || part === ".." || part.includes("\0"))) {
+function cleanPath(value) {
+  let p = String(value || "");
+  try { p = decodeURIComponent(p); } catch {}
+  p = p.split("?")[0].split("#")[0];
+  p = p.replace(/\\/g, "/").replace(/^\/+/, "");
+  const parts = p.split("/").filter(Boolean);
+  if (parts.some((part) => part === "." || part === ".." || part.indexOf("\0") !== -1)) {
     throw new Error("unsafe path");
   }
   return parts.join("/");
 }
 
-function rawUrl(path) {
-  const encoded = path.split("/").map((part) => encodeURIComponent(part)).join("/");
-  return RAW_BASE + encoded;
+function encodePath(p) {
+  return p.split("/").map((part) => encodeURIComponent(part)).join("/");
 }
 
-function hasExtension(path) {
-  const last = path.split("/").pop() || "";
-  return /\.[A-Za-z0-9][A-Za-z0-9._-]*$/.test(last);
+function cdnUrl(p) {
+  return CDN_BASE + encodePath(p);
 }
 
-function pageCandidates(path) {
-  if (!path) return ["index.html"];
-  if (path.endsWith("/")) {
-    const base = path.replace(/\/+$/, "");
-    return [`${base}/index.html`, `${base}.html`, base];
+function rawUrl(p) {
+  return RAW_BASE + encodePath(p);
+}
+
+function githubRawUrl(p) {
+  return GITHUB_RAW_BASE + encodePath(p);
+}
+
+function routeKey(p) {
+  if (!p) return "/";
+  return "/" + p.replace(/\/+$/, "");
+}
+
+async function fetchPage(sourcePath, requestId) {
+  const origins = [
+    { name: "jsdelivr", url: cdnUrl(sourcePath) },
+    { name: "github-raw", url: rawUrl(sourcePath) }
+  ];
+
+  for (const origin of origins) {
+    const started = Date.now();
+    try {
+      const response = await fetch(origin.url, {
+        redirect: "follow",
+        headers: {
+          "User-Agent": "melius-vercel-page-proxy/2.0",
+          "Accept": "text/html,*/*"
+        }
+      });
+      emit(response.ok ? "info" : "warn", "page_origin", {
+        requestId,
+        sourcePath,
+        origin: origin.name,
+        status: response.status,
+        elapsedMs: Date.now() - started
+      });
+      if (response.ok) return { response, origin: origin.name };
+    } catch (error) {
+      emit("error", "page_origin_exception", {
+        requestId,
+        sourcePath,
+        origin: origin.name,
+        message: error.message,
+        elapsedMs: Date.now() - started
+      });
+    }
   }
-  if (path.toLowerCase().endsWith(".html")) return [path];
-  if (hasExtension(path)) return [path];
-  return [path, `${path}.html`, `${path}/index.html`];
-}
-
-async function inspectCandidate(path, method = "GET") {
-  const url = rawUrl(path);
-  const response = await fetch(url, {
-    method,
-    redirect: "follow",
-    headers: {
-      "User-Agent": "melius-vercel-git-proxy/1.0",
-      "Accept": "*/*",
-    },
-  });
-  return { path, url, response };
+  return null;
 }
 
 module.exports = async function handler(req, res) {
@@ -67,127 +98,141 @@ module.exports = async function handler(req, res) {
 
   let path;
   try {
-    path = safePath(req.query.path ?? req.url?.split("?")[0] ?? "");
+    path = cleanPath(req.query.path || "");
   } catch (error) {
-    emit("error", "unsafe_path", { requestId, input: req.query.path, message: error.message });
+    emit("error", "unsafe_path", { requestId, message: error.message });
     res.statusCode = 400;
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    return res.end("Bad request");
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.end(JSON.stringify({ error: "unsafe path", requestId }));
   }
 
   if (path === "__health") {
-    emit("info", "health", { requestId, owner: OWNER, repo: REPO, ref: REF });
+    const body = {
+      ok: true,
+      source: OWNER + "/" + REPO + "@" + REF,
+      files: manifest.counts.files,
+      pages: manifest.counts.pages,
+      assetOrigin: "cdn.jsdelivr.net"
+    };
+    emit("info", "health", Object.assign({ requestId }, body));
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json; charset=utf-8");
-    return res.end(JSON.stringify({ ok: true, source: `${OWNER}/${REPO}@${REF}` }));
+    res.setHeader("Cache-Control", "no-store");
+    return res.end(JSON.stringify(body));
   }
 
-  const candidates = pageCandidates(path);
-  emit("info", "request_start", {
+  if (path === "__debug") {
+    const requested = cleanPath(req.query.file || "");
+    const key = routeKey(requested);
+    const page = PAGES[key] || null;
+    const fileExists = FILES.has(requested);
+    const body = {
+      requested,
+      route: key,
+      page,
+      fileExists,
+      assetUrl: fileExists ? cdnUrl(requested) : null
+    };
+    emit("info", "debug_lookup", Object.assign({ requestId }, body));
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    res.setHeader("Cache-Control", "no-store");
+    return res.end(JSON.stringify(body));
+  }
+
+  if (req.method !== "GET" && req.method !== "HEAD") {
+    emit("warn", "unsupported_method", { requestId, method: req.method, path });
+    res.statusCode = 405;
+    res.setHeader("Allow", "GET, HEAD");
+    return res.end();
+  }
+
+  const route = routeKey(path);
+  const pageSource = PAGES[route];
+
+  if (pageSource) {
+    emit("info", "page_request", { requestId, path, route, pageSource });
+    const result = await fetchPage(pageSource, requestId);
+
+    if (!result) {
+      emit("error", "page_unavailable", {
+        requestId,
+        path,
+        route,
+        pageSource,
+        elapsedMs: Date.now() - started
+      });
+      res.statusCode = 502;
+      res.setHeader("Content-Type", "application/json; charset=utf-8");
+      return res.end(JSON.stringify({
+        error: "page source unavailable",
+        route,
+        sourcePath: pageSource,
+        requestId
+      }));
+    }
+
+    const buffer = Buffer.from(await result.response.arrayBuffer());
+    emit("info", "page_served", {
+      requestId,
+      path,
+      route,
+      pageSource,
+      origin: result.origin,
+      bytes: buffer.length,
+      elapsedMs: Date.now() - started
+    });
+
+    res.statusCode = 200;
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    res.setHeader("Cache-Control", "public, max-age=0, s-maxage=60, stale-while-revalidate=300");
+    res.setHeader("X-Melius-Source", pageSource);
+    res.setHeader("X-Melius-Origin", result.origin);
+    if (req.method === "HEAD") return res.end();
+    return res.end(buffer);
+  }
+
+  if (FILES.has(path)) {
+    const meta = manifest.files[path] || {};
+    let location = cdnUrl(path);
+    let origin = "jsdelivr";
+
+    if (path === "desktop-app/download.dmg") {
+      location = githubRawUrl(path);
+      origin = "github-lfs";
+    }
+
+    emit("info", "asset_redirect", {
+      requestId,
+      path,
+      bytes: meta.size || null,
+      origin,
+      location,
+      elapsedMs: Date.now() - started
+    });
+
+    res.statusCode = 302;
+    res.setHeader("Location", location);
+    res.setHeader("Cache-Control", "public, max-age=300, s-maxage=3600");
+    res.setHeader("X-Melius-Asset-Origin", origin);
+    return res.end();
+  }
+
+  emit("warn", "manifest_miss", {
     requestId,
-    method: req.method,
     path,
-    candidates,
-    userAgent: req.headers["user-agent"] || null,
+    route,
+    method: req.method,
+    elapsedMs: Date.now() - started
   });
 
-  const isLikelyAsset = !!path && hasExtension(path) && !path.toLowerCase().endsWith(".html");
-
-  try {
-    if (isLikelyAsset) {
-      const candidate = candidates[0];
-      const checked = await inspectCandidate(candidate, "HEAD");
-      emit("info", "asset_probe", {
-        requestId,
-        path,
-        candidate,
-        status: checked.response.status,
-        contentType: checked.response.headers.get("content-type"),
-        contentLength: checked.response.headers.get("content-length"),
-        upstreamUrl: checked.response.url,
-        elapsedMs: Date.now() - started,
-      });
-
-      if (!checked.response.ok) {
-        res.statusCode = checked.response.status === 404 ? 404 : 502;
-        res.setHeader("Content-Type", "text/plain; charset=utf-8");
-        return res.end(`Asset unavailable: ${candidate}`);
-      }
-
-      res.statusCode = 307;
-      res.setHeader("Location", rawUrl(candidate));
-      res.setHeader("Cache-Control", "public, max-age=300, s-maxage=3600");
-      return res.end();
-    }
-
-    const attempts = [];
-    for (const candidate of candidates) {
-      const checked = await inspectCandidate(candidate, "GET");
-      attempts.push({ candidate, status: checked.response.status });
-
-      emit("info", "page_probe", {
-        requestId,
-        path,
-        candidate,
-        status: checked.response.status,
-        contentType: checked.response.headers.get("content-type"),
-        contentLength: checked.response.headers.get("content-length"),
-        elapsedMs: Date.now() - started,
-      });
-
-      if (!checked.response.ok) continue;
-
-      const body = Buffer.from(await checked.response.arrayBuffer());
-      let contentType = checked.response.headers.get("content-type") || "application/octet-stream";
-      const prefix = body.subarray(0, 256).toString("utf8").toLowerCase();
-      if (candidate.toLowerCase().endsWith(".html") || prefix.includes("<!doctype html") || prefix.includes("<html")) {
-        contentType = "text/html; charset=utf-8";
-      }
-
-      emit("info", "page_selected", {
-        requestId,
-        path,
-        candidate,
-        status: checked.response.status,
-        bytes: body.length,
-        contentType,
-        elapsedMs: Date.now() - started,
-      });
-
-      res.statusCode = 200;
-      res.setHeader("Content-Type", contentType);
-      res.setHeader("Cache-Control", contentType.startsWith("text/html")
-        ? "public, max-age=0, s-maxage=60, stale-while-revalidate=300"
-        : "public, max-age=300, s-maxage=3600");
-      return res.end(body);
-    }
-
-    emit("warn", "not_found", {
-      requestId,
-      path,
-      attempts,
-      elapsedMs: Date.now() - started,
-    });
-    res.statusCode = 404;
-    res.setHeader("Content-Type", "text/plain; charset=utf-8");
-    return res.end("Not found");
-  } catch (error) {
-    emit("error", "proxy_failure", {
-      requestId,
-      path,
-      candidates,
-      name: error.name,
-      message: error.message,
-      stack: error.stack,
-      elapsedMs: Date.now() - started,
-    });
-    res.statusCode = 502;
-    res.setHeader("Content-Type", "application/json; charset=utf-8");
-    return res.end(JSON.stringify({
-      error: "Git-backed site proxy failed",
-      path,
-      message: error.message,
-      requestId,
-    }));
-  }
+  res.statusCode = 404;
+  res.setHeader("Content-Type", "application/json; charset=utf-8");
+  res.setHeader("Cache-Control", "no-store");
+  return res.end(JSON.stringify({
+    error: "path not present in localized Git manifest",
+    path,
+    route,
+    requestId
+  }));
 };

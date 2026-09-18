@@ -2,4 +2,5 @@
 !api/
 api/*
 !api/proxy.js
+!site-manifest.json
 !vercel.json

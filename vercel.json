@@ -7,9 +7,6 @@
   },
   "routes": [
     {
-      "handle": "filesystem"
-    },
-    {
       "src": "/(.*)",
       "dest": "/api/proxy.js?path=$1"
     }
