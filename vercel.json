@@ -12,6 +12,10 @@
     {
       "source": "/videos/:path*",
       "destination": "https://raw.githubusercontent.com/mrbrownbear/melius/main/videos/:path*"
+    },
+    {
+      "source": "/_external/:path*",
+      "destination": "https://raw.githubusercontent.com/mrbrownbear/melius/main/_external/:path*"
     }
   ],
   "headers": [
