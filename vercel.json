@@ -2,5 +2,27 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "buildCommand": "python3 scripts/vercel_build.py",
   "outputDirectory": "dist",
-  "cleanUrls": true
+  "cleanUrls": true,
+  "rewrites": [
+    {
+      "source": "/api/empty.json",
+      "destination": "/empty.json"
+    },
+    {
+      "source": "/media/:path*",
+      "destination": "https://raw.githubusercontent.com/mrbrownbear/melius/main/media/:path*"
+    },
+    {
+      "source": "/images/:path*",
+      "destination": "https://raw.githubusercontent.com/mrbrownbear/melius/main/images/:path*"
+    },
+    {
+      "source": "/videos/:path*",
+      "destination": "https://raw.githubusercontent.com/mrbrownbear/melius/main/videos/:path*"
+    },
+    {
+      "source": "/_external/:path*",
+      "destination": "https://raw.githubusercontent.com/mrbrownbear/melius/main/_external/:path*"
+    }
+  ]
 }
