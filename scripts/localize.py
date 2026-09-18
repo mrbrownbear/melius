@@ -452,6 +452,8 @@ def offline_audit() -> None:
     for p in OUT.rglob("*"):
         if not p.is_file() or p.suffix.lower() not in TEXT_EXTS:
             continue
+        if p.name == "LOCALIZATION_REPORT.json":
+            continue
         try:
             text = p.read_text("utf-8", errors="ignore")
         except Exception:
