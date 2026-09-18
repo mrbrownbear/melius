@@ -132,15 +132,50 @@ module.exports = async function handler(req, res) {
   }
 
   if (path === "__health") {
+    const samples = [
+      "_next/static/immutable/chunks/0--fcpug0svxq.js",
+      "_next/static/immutable/chunks/0d7g7lz9mwpqx.css",
+      "_next/static/immutable/media/797e433ab948586e-s.p.1v5bejj26fx9h.woff2",
+      "media/customers/ink/classpass.svg"
+    ];
+    const checks = [];
+
+    for (const sample of samples) {
+      const url = cdnUrl(sample);
+      const startedProbe = Date.now();
+      try {
+        const response = await fetch(url, { method: "HEAD", redirect: "follow" });
+        checks.push({
+          path: sample,
+          status: response.status,
+          ok: response.ok,
+          contentType: response.headers.get("content-type"),
+          contentLength: response.headers.get("content-length"),
+          elapsedMs: Date.now() - startedProbe
+        });
+      } catch (error) {
+        checks.push({
+          path: sample,
+          status: 0,
+          ok: false,
+          error: error.message,
+          elapsedMs: Date.now() - startedProbe
+        });
+      }
+    }
+
+    const ok = checks.every((check) => check.ok);
     const body = {
-      ok: true,
+      ok,
       source: OWNER + "/" + REPO + "@" + REF,
       files: manifest.counts.files,
       pages: manifest.counts.pages,
-      assetOrigin: "cdn.jsdelivr.net"
+      assetOrigin: "cdn.jsdelivr.net",
+      checks
     };
-    emit("info", "health", Object.assign({ requestId }, body));
-    res.statusCode = 200;
+
+    emit(ok ? "info" : "error", ok ? "health" : "health_failed", Object.assign({ requestId }, body));
+    res.statusCode = ok ? 200 : 503;
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.setHeader("Cache-Control", "no-store");
     return res.end(JSON.stringify(body));
@@ -151,14 +186,37 @@ module.exports = async function handler(req, res) {
     const key = routeKey(requested);
     const page = PAGES[key] || null;
     const fileExists = FILES.has(requested);
+    let probe = null;
+    if (fileExists) {
+      const probeStarted = Date.now();
+      try {
+        const response = await fetch(cdnUrl(requested), { method: "HEAD", redirect: "follow" });
+        probe = {
+          status: response.status,
+          ok: response.ok,
+          contentType: response.headers.get("content-type"),
+          contentLength: response.headers.get("content-length"),
+          elapsedMs: Date.now() - probeStarted
+        };
+      } catch (error) {
+        probe = {
+          status: 0,
+          ok: false,
+          error: error.message,
+          elapsedMs: Date.now() - probeStarted
+        };
+      }
+    }
+
     const body = {
       requested,
       route: key,
       page,
       fileExists,
-      assetUrl: fileExists ? cdnUrl(requested) : null
+      assetUrl: fileExists ? cdnUrl(requested) : null,
+      probe
     };
-    emit("info", "debug_lookup", Object.assign({ requestId }, body));
+    emit(probe && !probe.ok ? "error" : "info", probe && !probe.ok ? "debug_probe_failed" : "debug_lookup", Object.assign({ requestId }, body));
     res.statusCode = 200;
     res.setHeader("Content-Type", "application/json; charset=utf-8");
     res.setHeader("Cache-Control", "no-store");
