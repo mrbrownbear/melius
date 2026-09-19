@@ -55,6 +55,60 @@ function routeKey(p) {
   return "/" + p.replace(/\/+$/, "");
 }
 
+function prepareHtmlForRuntime(html, requestId) {
+  const guardPattern = /<script\s+id=["']__local_only_guard["'][^>]*>[\s\S]*?<\/script>/i;
+  const hadGuard = guardPattern.test(html);
+  let out = html.replace(guardPattern, "");
+
+  const reporter = `<script id="__runtime_error_reporter">
+(function(){
+  function send(kind, payload) {
+    try {
+      var body = JSON.stringify({
+        kind: kind,
+        href: location.href,
+        userAgent: navigator.userAgent,
+        payload: payload || null,
+        ts: new Date().toISOString()
+      });
+      if (navigator.sendBeacon) {
+        navigator.sendBeacon('/__client_error', new Blob([body], {type:'application/json'}));
+      } else {
+        fetch('/__client_error', {method:'POST',headers:{'Content-Type':'application/json'},body:body,keepalive:true});
+      }
+    } catch (_) {}
+  }
+  window.addEventListener('error', function(e) {
+    send('error', {
+      message: e.message || null,
+      filename: e.filename || null,
+      lineno: e.lineno || null,
+      colno: e.colno || null,
+      stack: e.error && e.error.stack ? e.error.stack : null
+    });
+  });
+  window.addEventListener('unhandledrejection', function(e) {
+    var reason = e.reason;
+    send('unhandledrejection', {
+      message: reason && reason.message ? reason.message : String(reason),
+      stack: reason && reason.stack ? reason.stack : null
+    });
+  });
+})();</script>`;
+
+  if (!out.includes('__runtime_error_reporter')) {
+    out = out.replace(/<\/head>/i, reporter + "</head>");
+  }
+
+  emit("info", "html_runtime_prepare", {
+    requestId,
+    removedLocalOnlyGuard: hadGuard,
+    reporterInjected: true
+  });
+
+  return out;
+}
+
 async function fetchPage(sourcePath, requestId) {
   const origins = [
     { name: "jsdelivr", url: cdnUrl(sourcePath) },
@@ -198,10 +252,29 @@ module.exports = async function handler(req, res) {
     return res.end(JSON.stringify(body));
   }
 
+  if (path === "__client_error" && req.method === "POST") {
+    let raw = "";
+    req.on("data", chunk => {
+      if (raw.length < 65536) raw += chunk.toString("utf8");
+    });
+    req.on("end", () => {
+      let payload = raw;
+      try { payload = JSON.parse(raw || "{}"); } catch {}
+      emit("error", "client_runtime_error", {
+        requestId,
+        payload
+      });
+      res.statusCode = 204;
+      res.setHeader("Cache-Control", "no-store");
+      res.end();
+    });
+    return;
+  }
+
   if (req.method !== "GET" && req.method !== "HEAD") {
     emit("warn", "unsupported_method", { requestId, method: req.method, path });
     res.statusCode = 405;
-    res.setHeader("Allow", "GET, HEAD");
+    res.setHeader("Allow", "GET, HEAD, POST");
     return res.end();
   }
 
@@ -230,7 +303,9 @@ module.exports = async function handler(req, res) {
       }));
     }
 
-    const buffer = Buffer.from(await result.response.arrayBuffer());
+    const originalBuffer = Buffer.from(await result.response.arrayBuffer());
+    const preparedHtml = prepareHtmlForRuntime(originalBuffer.toString("utf8"), requestId);
+    const buffer = Buffer.from(preparedHtml, "utf8");
 
     emit("info", "page_served", {
       requestId,
@@ -238,8 +313,10 @@ module.exports = async function handler(req, res) {
       route,
       pageSource,
       origin: result.origin,
+      originalBytes: originalBuffer.length,
       bytes: buffer.length,
       assetMode: "same-origin",
+      localOnlyGuardRemoved: true,
       elapsedMs: Date.now() - started
     });
 
