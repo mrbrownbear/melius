@@ -1,4 +1,6 @@
 /*
+!_next/
+!_next/**
 !api/
 api/*
 !api/proxy.js
