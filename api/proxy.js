@@ -55,31 +55,6 @@ function routeKey(p) {
   return "/" + p.replace(/\/+$/, "");
 }
 
-function rewriteKnownAssetUrls(html, requestId) {
-  let rewrites = 0;
-  const rewritten = html.replace(/\/[A-Za-z0-9_@%+~.,=\-\/]+/g, (match) => {
-    const path = match.slice(1);
-    if (!FILES.has(path)) return match;
-
-    const pageRoute = PAGES["/" + path] || PAGES["/" + path.replace(/\.html$/, "")];
-    if (pageRoute) return match;
-
-    if (path === "desktop-app/download.dmg") {
-      rewrites += 1;
-      return githubRawUrl(path);
-    }
-
-    rewrites += 1;
-    return cdnUrl(path);
-  });
-
-  emit("info", "html_asset_rewrite", {
-    requestId,
-    rewrites
-  });
-  return rewritten;
-}
-
 async function fetchPage(sourcePath, requestId) {
   const origins = [
     { name: "jsdelivr", url: cdnUrl(sourcePath) },
@@ -170,7 +145,7 @@ module.exports = async function handler(req, res) {
       source: OWNER + "/" + REPO + "@" + REF,
       files: manifest.counts.files,
       pages: manifest.counts.pages,
-      assetOrigin: "cdn.jsdelivr.net",
+      assetOrigin: "vercel-same-origin-proxy",
       checks
     };
 
@@ -255,10 +230,7 @@ module.exports = async function handler(req, res) {
       }));
     }
 
-    const originalBuffer = Buffer.from(await result.response.arrayBuffer());
-    const originalHtml = originalBuffer.toString("utf8");
-    const rewrittenHtml = rewriteKnownAssetUrls(originalHtml, requestId);
-    const buffer = Buffer.from(rewrittenHtml, "utf8");
+    const buffer = Buffer.from(await result.response.arrayBuffer());
 
     emit("info", "page_served", {
       requestId,
@@ -266,8 +238,8 @@ module.exports = async function handler(req, res) {
       route,
       pageSource,
       origin: result.origin,
-      originalBytes: originalBuffer.length,
       bytes: buffer.length,
+      assetMode: "same-origin",
       elapsedMs: Date.now() - started
     });
 
