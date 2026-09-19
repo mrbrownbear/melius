@@ -188,10 +188,16 @@ module.exports = async function handler(req, res) {
   res.setHeader("X-Melius-Origin", selected);
   res.setHeader("Access-Control-Allow-Origin", "*");
 
-  for (const header of ["content-length", "content-range", "accept-ranges", "etag", "last-modified"]) {
+  for (const header of ["content-range", "accept-ranges", "etag", "last-modified"]) {
     const value = response.headers.get(header);
     if (value) res.setHeader(header.split("-").map(x => x.charAt(0).toUpperCase() + x.slice(1)).join("-"), value);
   }
+
+  // IMPORTANT: do not forward upstream Content-Length here.
+  // Node fetch may transparently decompress gzip/br responses while keeping the
+  // upstream compressed byte length in the headers. Forwarding that stale length
+  // truncates JS/CSS in the browser and causes SyntaxError/Unexpected end of input.
+  res.removeHeader("Content-Length");
 
   if (req.method === "HEAD" || response.status === 304 || !response.body) {
     emit("info", "asset_served", {
@@ -214,6 +220,38 @@ module.exports = async function handler(req, res) {
     range: req.headers.range || null,
     elapsedMs: Date.now() - started
   });
+
+  const ext = pathLib.extname(assetPath).toLowerCase();
+  const bufferSafe = new Set([
+    ".js", ".mjs", ".css", ".json", ".xml", ".txt", ".svg",
+    ".woff", ".woff2", ".ttf", ".otf", ".wasm"
+  ]);
+
+  if (bufferSafe.has(ext) || assetPath.endsWith("/gsi/client")) {
+    try {
+      const body = Buffer.from(await response.arrayBuffer());
+      res.removeHeader("Content-Length");
+      res.setHeader("Content-Length", String(body.length));
+      emit("info", "asset_buffered", {
+        requestId,
+        path: assetPath,
+        origin: selected,
+        status: response.status,
+        bytes: body.length,
+        elapsedMs: Date.now() - started
+      });
+      return res.end(body);
+    } catch (error) {
+      emit("error", "buffer_error", {
+        requestId,
+        path: assetPath,
+        message: error.message,
+        elapsedMs: Date.now() - started
+      });
+      res.statusCode = 502;
+      return res.end("Failed to buffer localized asset");
+    }
+  }
 
   const stream = Readable.fromWeb(response.body);
   stream.on("error", error => {
