@@ -10,12 +10,100 @@
   },
   "rewrites": [
     {
-      "source": "^/(.*\\.(?:js|mjs|css|woff|woff2|ttf|otf|png|jpg|jpeg|gif|webp|avif|svg|ico|mp4|webm|mp3|wav|glb|gltf|wasm|json|xml|txt|pdf))$",
-      "destination": "/api/asset.js?path=$1"
+      "source": "/",
+      "destination": "/api/proxy.js?path="
+    },
+    {
+      "source": "/__health",
+      "destination": "/api/proxy.js?path=__health"
+    },
+    {
+      "source": "/__debug",
+      "destination": "/api/proxy.js?path=__debug"
+    },
+    {
+      "source": "/_next/:path*",
+      "destination": "/api/asset.js?path=_next/:path*"
+    },
+    {
+      "source": "/media/:path*",
+      "destination": "/api/asset.js?path=media/:path*"
+    },
+    {
+      "source": "/images/:path*",
+      "destination": "/api/asset.js?path=images/:path*"
+    },
+    {
+      "source": "/videos/:path*",
+      "destination": "/api/asset.js?path=videos/:path*"
     },
     {
       "source": "/_external/:path*",
       "destination": "/api/asset.js?path=_external/:path*"
+    },
+    {
+      "source": "/downloads/:path*",
+      "destination": "/api/asset.js?path=downloads/:path*"
+    },
+    {
+      "source": "/svg/:path*",
+      "destination": "/api/asset.js?path=svg/:path*"
+    },
+    {
+      "source": "/:path*.js",
+      "destination": "/api/asset.js?path=:path*.js"
+    },
+    {
+      "source": "/:path*.css",
+      "destination": "/api/asset.js?path=:path*.css"
+    },
+    {
+      "source": "/:path*.woff2",
+      "destination": "/api/asset.js?path=:path*.woff2"
+    },
+    {
+      "source": "/:path*.woff",
+      "destination": "/api/asset.js?path=:path*.woff"
+    },
+    {
+      "source": "/:path*.png",
+      "destination": "/api/asset.js?path=:path*.png"
+    },
+    {
+      "source": "/:path*.jpg",
+      "destination": "/api/asset.js?path=:path*.jpg"
+    },
+    {
+      "source": "/:path*.jpeg",
+      "destination": "/api/asset.js?path=:path*.jpeg"
+    },
+    {
+      "source": "/:path*.webp",
+      "destination": "/api/asset.js?path=:path*.webp"
+    },
+    {
+      "source": "/:path*.svg",
+      "destination": "/api/asset.js?path=:path*.svg"
+    },
+    {
+      "source": "/:path*.ico",
+      "destination": "/api/asset.js?path=:path*.ico"
+    },
+    {
+      "source": "/:path*.webm",
+      "destination": "/api/asset.js?path=:path*.webm"
+    },
+    {
+      "source": "/:path*.mp4",
+      "destination": "/api/asset.js?path=:path*.mp4"
+    },
+    {
+      "source": "/:path*.glb",
+      "destination": "/api/asset.js?path=:path*.glb"
+    },
+    {
+      "source": "/:path*.json",
+      "destination": "/api/asset.js?path=:path*.json"
     },
     {
       "source": "/:path*",
