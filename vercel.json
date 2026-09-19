@@ -5,50 +5,38 @@
       "maxDuration": 30
     }
   },
-  "routes": [
+  "rewrites": [
     {
-      "src": "/_next/(.*)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/_next/$1"
+      "source": "/_next/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/_next/:path*"
     },
     {
-      "src": "/media/(.*)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/media/$1"
+      "source": "/media/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/media/:path*"
     },
     {
-      "src": "/images/(.*)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/images/$1"
+      "source": "/images/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/images/:path*"
     },
     {
-      "src": "/videos/(.*)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/videos/$1"
+      "source": "/videos/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/videos/:path*"
     },
     {
-      "src": "/_external/(.*)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/_external/$1"
+      "source": "/_external/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/_external/:path*"
     },
     {
-      "src": "/downloads/(.*)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/downloads/$1"
+      "source": "/downloads/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/downloads/:path*"
     },
     {
-      "src": "/svg/(.*)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/svg/$1"
+      "source": "/svg/:path*",
+      "destination": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/svg/:path*"
     },
     {
-      "src": "/(icon(?:__q_[^/]+)?\\.png)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/$1"
-    },
-    {
-      "src": "/(opengraph-image(?:__q_[^/]+)?\\.png)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/$1"
-    },
-    {
-      "src": "/(twitter-image(?:__q_[^/]+)?\\.png)",
-      "dest": "https://cdn.jsdelivr.net/gh/mrbrownbear/melius@112a8898fd2d608081edddf0d4518443db2e20b2/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/api/proxy.js?path=$1"
+      "source": "/:path*",
+      "destination": "/api/proxy.js?path=:path*"
     }
   ]
 }
